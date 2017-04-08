@@ -32,10 +32,12 @@ class BusinessCell: UITableViewCell {
             addressLabel.text = business.address
             categoryLabel.text = business.categories
             
+            
         }
     }
     override func awakeFromNib() {
         super.awakeFromNib()
+        thumbImageView.layer.cornerRadius = 5
         // Initialization code
     }
 

@@ -22,6 +22,7 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var businessTitle: UILabel!
     @IBOutlet weak var ratingView: UIImageView!
     var business: Business! {
+        
         didSet{
             thumbImageView.setImageWith(business.imageURL!)
             distanceLabel.text = business.distance

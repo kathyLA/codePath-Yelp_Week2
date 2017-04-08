@@ -40,32 +40,32 @@
                                                     </constraints>
                                                 </imageView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Inf-k8-EzQ">
-                                                    <rect key="frame" x="95" y="44" width="132" height="23"/>
+                                                    <rect key="frame" x="95" y="42.5" width="132" height="23"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="23" id="Xsu-op-Rd0"/>
                                                         <constraint firstAttribute="width" constant="132" id="nYi-fJ-jb6"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Cockscomb" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gkA-Xq-1WT">
-                                                    <rect key="frame" x="95" y="15" width="213" height="22"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                    <rect key="frame" x="95" y="15" width="213" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="1367Reviews" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2nE-aH-WIN">
-                                                    <rect key="frame" x="235" y="46" width="80" height="16"/>
+                                                    <rect key="frame" x="235" y="44.5" width="80" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fish, Seafood" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bD8-sA-V7L">
-                                                    <rect key="frame" x="95" y="96" width="88" height="17"/>
+                                                    <rect key="frame" x="95" y="94.5" width="88" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="2824 Jones Street, North Beach" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tum-gS-RBB">
-                                                    <rect key="frame" x="95" y="77" width="196" height="16"/>
+                                                    <rect key="frame" x="95" y="75.5" width="196" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -97,10 +97,12 @@
                                                 <constraint firstItem="Buk-dT-rjh" firstAttribute="top" secondItem="8Kg-LL-XCM" secondAttribute="top" constant="17" id="Ima-Ox-wic"/>
                                                 <constraint firstItem="Tum-gS-RBB" firstAttribute="top" secondItem="Inf-k8-EzQ" secondAttribute="bottom" constant="10" id="SRn-ua-caL"/>
                                                 <constraint firstItem="Tum-gS-RBB" firstAttribute="leading" secondItem="Buk-dT-rjh" secondAttribute="trailing" constant="9" id="YrF-cO-0se"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Tum-gS-RBB" secondAttribute="trailing" constant="8" id="Z9m-9s-3jG"/>
                                                 <constraint firstItem="gkA-Xq-1WT" firstAttribute="leading" secondItem="Buk-dT-rjh" secondAttribute="trailing" constant="9" id="by4-AP-0em"/>
                                                 <constraint firstAttribute="trailing" secondItem="Zq6-rt-VJQ" secondAttribute="trailing" constant="25" id="fGo-es-T8O"/>
                                                 <constraint firstItem="Zq6-rt-VJQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2nE-aH-WIN" secondAttribute="trailing" constant="8" id="heE-As-P4d"/>
                                                 <constraint firstItem="Inf-k8-EzQ" firstAttribute="leading" secondItem="Buk-dT-rjh" secondAttribute="trailing" constant="9" id="jbX-Dw-b4M"/>
+                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Buk-dT-rjh" secondAttribute="bottom" constant="12" id="qq3-T8-ban"/>
                                                 <constraint firstItem="bD8-sA-V7L" firstAttribute="leading" secondItem="Tum-gS-RBB" secondAttribute="leading" id="r1c-57-4oe"/>
                                                 <constraint firstItem="bD8-sA-V7L" firstAttribute="top" secondItem="Tum-gS-RBB" secondAttribute="bottom" constant="3" id="z7g-yR-7OQ"/>
                                             </constraints>

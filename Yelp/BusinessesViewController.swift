@@ -10,8 +10,13 @@ import UIKit
 
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UISearchBarDelegate {
     
-    var businesses: [Business]!
+    var businesses: [Business]! {
+        didSet {
+            filterByKeyBoardInput(searchText: searchBar.text ?? "")
+        }
+    }
     var searchBar: UISearchBar!
+    var filterData: [Business]!
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +24,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         searchBar.sizeToFit()
         searchBar.delegate = self
         navigationItem.titleView = searchBar
+        filterData = []
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -27,13 +33,14 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
-            if let businesses = businesses {
+            /*if let businesses = businesses {
                 for business in businesses {
                     print(business.name!)
                     print(business.address!)
                 }
             }
             self.tableView.reloadData()
+            */
             }
         )
         
@@ -55,8 +62,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-          let data = businesses ?? []
-          return data.count
+          let data = filterData ?? []
+          return filterData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -77,8 +84,32 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             
             self.businesses = businesses ?? []
             self.tableView.reloadData()
+            
         }
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+       filterByKeyBoardInput(searchText: searchText)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    func filterByKeyBoardInput(searchText: String) {
+        filterData = searchText.isEmpty ? self.businesses : self.businesses.filter({ (business: Business) -> Bool in
+            return (business.name?.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil)
+            //TODO : Also filter by address and filter other keyword
+        })
+        tableView.reloadData()
+    }
+    
     /*
      // MARK: - Navigation
      

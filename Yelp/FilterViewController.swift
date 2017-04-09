@@ -82,7 +82,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     
     var selectDistanceIndex = 0
     var dealSwitchStatus = false
-    var sortSelectIndex = 0
+    var selectSortIndex = 0
 
     
     var tableStruct:[String: AnyObject] = [:]
@@ -93,7 +93,6 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        
         self.tableView.estimatedRowHeight = 60
         self.tableView.rowHeight = UITableViewAutomaticDimension
         restaurantCategories = yelpCategories()
@@ -128,14 +127,42 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 return distanceFilters.count
             case .Sort:
                  return sortFilters.count
-            default:
+            case .Categories:
                 return restaurantCategories.count
         }
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch tableSection[indexPath.section] {
+            case .Distance:
+                let perviousIndexPath: IndexPath = IndexPath(row: selectDistanceIndex, section: indexPath.section )
+                let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
+                preSelectedCell.isCheck = false
+        
+                let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
+                cell.isCheck = true
+            
+                selectDistanceIndex = indexPath.row
+            case .Sort:
+                let perviousIndexPath: IndexPath = IndexPath(row: selectSortIndex, section: indexPath.section )
+                let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
+                
+                preSelectedCell.isCheck = false
+                let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
+                cell.isCheck = true
+                selectSortIndex = indexPath.row
+            default: break
+        }
+    }
     
-    func SwitchCell(switchCell: SwitchCell, didChangeValue: Bool) {
-        //let indexPath = tableView.indexPath(for: switchCell)!
-        //switchState[indexPath.row] = didChangeValue
+    func SwitchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
+            let indexPath = tableView.indexPath(for: switchCell)!
+            if tableSection[indexPath.section] == .Categories {
+                   categoriesSwitchState[indexPath.row] = value
+            }
+            else {
+                   dealSwitchStatus = value
+            }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -143,29 +170,34 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
             case .OfferingDeal:
                 let displayString = "Offering a Deal"
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
+                cell.delegate = self
+                let on = dealSwitchStatus
+                cell.settingSwitch.setOn(on, animated: false)
                 cell.switchLabel.text = displayString
                 return cell
+            
             case .Distance:
                 let displayString = distanceFilters[indexPath.row].distanceLabel()
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckButtonCell") as! CheckButtonCell
-                cell.buttonLabel.text = displayString
+                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
+                cell.checkCircleLabel.text = displayString
+                cell.isCheck = indexPath.row == selectDistanceIndex ? true : false
+                
                 return cell
             case .Sort:
                 let displayString = sortFilters[indexPath.row].sortLabel()
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckButtonCell") as! CheckButtonCell
-                cell.buttonLabel.text = displayString
+                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
+                cell.checkCircleLabel.text = displayString
+                cell.isCheck = indexPath.row == selectSortIndex ? true : false
+                
                 return cell
             case .Categories:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
                 cell.switchLabel.text = (restaurantCategories[indexPath.row])["name"]
+                cell.delegate = self
+                let on = categoriesSwitchState[indexPath.row] ?? false
+                cell.settingSwitch.setOn(on, animated: false)
                 return cell
          }
-        
-            /*let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as? SwitchCell
-            cell?.delegate = self
-            let on = switchState[indexPath.row] ?? false
-            cell?.settingSwitch.setOn(on, animated: false)
-            return cell!*/
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

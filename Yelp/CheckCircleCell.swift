@@ -8,32 +8,31 @@
 
 import UIKit
 
-class CheckButtonCell: UITableViewCell {
 
-    @IBOutlet weak var checkButton: UIButton!
-    @IBOutlet weak var buttonLabel: UILabel!
+class CheckCircleCell: UITableViewCell {
+    
+    @IBOutlet weak var checkCircleImageView: UIImageView!
+    @IBOutlet weak var checkCircleLabel: UILabel!
     var checkCircleImg: UIImage = (UIImage.init(named: "ic_check_circle")?.withRenderingMode(.alwaysTemplate))!
-    var isChecked: Bool = false {
+    var isCheck: Bool = false {
         didSet {
-        
+            self.checkCircleImageView.tintColor = isCheck ? UIColor.red : UIColor.lightGray
         }
     }
-    
+  
+   
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-    }
-
-    @IBAction func onCheck(_ sender: Any) {
-       
+        self.selectionStyle = .none
+        self.checkCircleImageView.image = checkCircleImg
+        self.checkCircleImageView?.tintColor = UIColor.lightGray
         
     }
     
+    //
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
     }
 
 }

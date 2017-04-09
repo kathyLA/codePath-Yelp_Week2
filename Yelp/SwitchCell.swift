@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol SwitchCellDelegate{
-  @objc optional func SwitchCell(switchCell: SwitchCell, didChangeValue: Bool)
+  @objc optional func SwitchCell(switchCell: SwitchCell, didChangeValue value: Bool)
 }
 
 class SwitchCell: UITableViewCell {

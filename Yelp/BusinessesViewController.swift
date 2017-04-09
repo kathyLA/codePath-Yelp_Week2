@@ -57,13 +57,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell") as? BusinessCell
         cell?.business = businesses[indexPath.row]
+
         return cell!
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    
+    func filterViewController(filterViewController: FilterViewController, didUpdateFilters filters: [String : AnyObject]) {
+        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: [], deals: nil, radius: nil) { (businesses:[Business]?, error: Error?) in
+            
+            self.businesses = businesses ?? []
+            self.tableView.reloadData()
+        }
+    }
     /*
      // MARK: - Navigation
      

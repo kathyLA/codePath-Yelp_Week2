@@ -146,10 +146,14 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 cell.switchLabel.text = displayString
                 return cell
             case .Distance:
+                let displayString = distanceFilters[indexPath.row].distanceLabel()
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CheckButtonCell") as! CheckButtonCell
+                cell.buttonLabel.text = displayString
                 return cell
             case .Sort:
+                let displayString = sortFilters[indexPath.row].sortLabel()
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CheckButtonCell") as! CheckButtonCell
+                cell.buttonLabel.text = displayString
                 return cell
             case .Categories:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell

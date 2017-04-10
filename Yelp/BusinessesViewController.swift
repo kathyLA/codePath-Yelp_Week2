@@ -8,15 +8,17 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UISearchBarDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UISearchBarDelegate, FilterViewControllerDelegate {
     
     var businesses: [Business]! {
         didSet {
             filterByKeyBoardInput(searchText: searchBar.text ?? "")
         }
     }
+    
     var searchBar: UISearchBar!
-    var filterData: [Business]!
+    var searchBarFilterData: [Business]!
+    var settingFilters: [String: AnyObject]!
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +26,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         searchBar.sizeToFit()
         searchBar.delegate = self
         navigationItem.titleView = searchBar
-        filterData = []
+        searchBarFilterData = []
+        settingFilters = [:]
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -62,8 +65,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-          let data = filterData ?? []
-          return filterData.count
+          return searchBarFilterData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -78,13 +80,20 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         // Dispose of any resources that can be recreated.
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let navigationController = segue.destination as? UINavigationController
+        let filterViewController = navigationController?.topViewController as? FilterViewController
+        filterViewController?.settingfilters = settingFilters
+        filterViewController?.delegate = self
+        
+    }
     
     func filterViewController(filterViewController: FilterViewController, didUpdateFilters filters: [String : AnyObject]) {
-        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: [], deals: nil, radius: nil) { (businesses:[Business]?, error: Error?) in
-            
+        self.settingFilters = filters
+        
+        let categories = filters["categories_filter"] as? [String]
+        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: categories, deals: nil, radius: nil) { (businesses:[Business]?, error: Error?) in
             self.businesses = businesses ?? []
-            self.tableView.reloadData()
-            
         }
     }
     
@@ -103,7 +112,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func filterByKeyBoardInput(searchText: String) {
-        filterData = searchText.isEmpty ? self.businesses : self.businesses.filter({ (business: Business) -> Bool in
+        searchBarFilterData = searchText.isEmpty ? self.businesses : self.businesses.filter({ (business: Business) -> Bool in
             return (business.name?.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil)
             //TODO : Also filter by address and filter other keyword
         })

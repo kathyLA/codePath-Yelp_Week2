@@ -14,21 +14,21 @@ import UIKit
 }
 
 enum SectionIdentifier: String {
-    case OfferingDeal = "Offering a Deal"
-    case Distance = "Distance"
-    case Sort = "Sort By"
-    case Categories = "Restaurant Categroy"
+    case OfferingDeal = "deal_filter"
+    case Distance = "distance_filter"
+    case Sort = "sort_filter"
+    case Categories = "categories_filter"
     
-    func showSectionTitle() -> Bool {
+    func showSectionTitle() -> (Bool, String) {
       switch(self) {
         case .OfferingDeal:
-            return false
+            return (false, "Offering a Deal")
         case .Distance:
-            return true
+            return (true, "Distance")
         case .Sort:
-            return true
+            return (true, "Sort By")
         case .Categories:
-            return true
+            return (true, "Restaurant Categroy")
       }
     }
 }
@@ -70,7 +70,7 @@ extension YelpSortMode {
     }
 }
 
-class FilterViewController: UIViewController , UITableViewDelegate, UITableViewDataSource, SwitchCellDelegate, FilterViewControllerDelegate {
+class FilterViewController: UIViewController , UITableViewDelegate, UITableViewDataSource, SwitchCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     let tableSection: [SectionIdentifier] = [.OfferingDeal, .Distance, .Sort , .Categories]
@@ -83,11 +83,15 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     var selectDistanceIndex = 0
     var dealSwitchStatus = false
     var selectSortIndex = 0
-
+    var settingfilters: [String: AnyObject]!
     
     var tableStruct:[String: AnyObject] = [:]
     var restaurantCategories: [[String: String]]!
+    
+    
     var categoriesSwitchState: [Int: Bool] = [:]
+    var categoriesSeatchKey: [String: String] = [:]
+    
     weak var delegate: FilterViewControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,6 +115,21 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     
     @IBAction func onTapSearch(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+        
+        var filter = [String: AnyObject]()
+        var selectedCategories: [String] = [String]()
+        for (row, selected) in categoriesSwitchState {
+            if selected {
+                selectedCategories.append(restaurantCategories[row]["code"]!)
+            }
+        }
+        
+        if selectedCategories.count > 0 {
+            let key = SectionIdentifier.Categories.rawValue
+            filter[key] = selectedCategories as AnyObject?
+        }
+        
+        delegate?.filterViewController?(filterViewController: self, didUpdateFilters: filter)
     }
     
     @IBAction func onTapCancel(_ sender: Any) {
@@ -166,7 +185,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch (tableSection[indexPath.section]){
+        switch (tableSection[indexPath.section]) {
             case .OfferingDeal:
                 let displayString = "Offering a Deal"
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
@@ -183,6 +202,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 cell.isCheck = indexPath.row == selectDistanceIndex ? true : false
                 
                 return cell
+            
             case .Sort:
                 let displayString = sortFilters[indexPath.row].sortLabel()
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
@@ -200,17 +220,12 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
          }
     }
     
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let title = tableSection[section].rawValue
-        return tableSection[section].showSectionTitle() ? title : nil
+        let item: (show: Bool, title: String) = tableSection[section].showSectionTitle()
+        return  item.show ? item.title : nil
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            let navigationController = segue.destination as? UINavigationController
-            let filterViewController = navigationController?.topViewController as? FilterViewController
-            filterViewController?.delegate = self
-        
-    }
     
   
     

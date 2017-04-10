@@ -78,15 +78,14 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     let distanceFilters: [Distance] = [.Auto,.Distance1,.Distance2,.Distance3, .Distance4]
     let sortFilters:[YelpSortMode] = [.bestMatched, .distance, .highestRated]
     
-    let defaultCategories = 3
+    let defaultDispalyCategoriesNumber = 3
     
     
     var selectDistanceIndex: Int!
     var dealSwitchStatus = false
     var selectSortIndex: Int!
     var settingfilters: [String: AnyObject]!
-    
-    //var tableStruct:[String: AnyObject] = [:]
+
     var restaurantCategories: [[String: String]]!
     var categoriesSwitchState: [Int: Bool] = [:]
     var searchCategories: [String: String] = [:]
@@ -106,7 +105,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
         selectSortIndex = settingfilters["sort_filter_index"] as? Int ?? 0
         searchCategories = settingfilters["categories_filter"] as? [String: String] ?? [String: String]()
         categoriesSwitchState = settingfilters["categories_switches"] as? [Int: Bool] ?? [Int : Bool]()
-        // Do any additional setup after loading the view.
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -148,7 +147,9 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
             case .Sort:
                  return (folding[key] ?? false) ? 1 : sortFilters.count
             case .Categories:
-                return restaurantCategories.count
+                //+1 for more
+                return (folding[key] ?? false) ? (defaultDispalyCategoriesNumber + 1) : restaurantCategories.count
+            
         }
     }
 
@@ -181,6 +182,13 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 }
                 folding[key] = !sectionFold
                 tableView.reloadSections(section , with: UITableViewRowAnimation.automatic)
+            case .Categories:
+                if sectionFold {
+                    //More
+                    if indexPath.row == (defaultDispalyCategoriesNumber + 1) {
+                      folding[key] = !sectionFold
+                    }
+                }
             default: break
         }
     }
@@ -246,12 +254,18 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 }
             
             case .Categories:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
-                cell.switchLabel.text = (restaurantCategories[indexPath.row])["name"]
-                cell.delegate = self
-                let on = categoriesSwitchState[indexPath.row] ?? false
-                cell.settingSwitch.setOn(on, animated: false)
-                return cell
+                if value && (indexPath.row == defaultDispalyCategoriesNumber + 1) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCell
+                    return cell
+                }
+                else {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
+                    cell.switchLabel.text = (restaurantCategories[indexPath.row])["name"]
+                    cell.delegate = self
+                    let on = categoriesSwitchState[indexPath.row] ?? false
+                    cell.settingSwitch.setOn(on, animated: false)
+                    return cell
+                }
          }
     }
     
@@ -277,6 +291,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
 }
 
 extension FilterViewController {
+    //ToDo : lookup the categories search api to request api dynamiclly
     func yelpCategories() -> [[String: String]] {
         return [["name" : "Afghan", "code": "afghani"],
                 ["name" : "African", "code": "african"],

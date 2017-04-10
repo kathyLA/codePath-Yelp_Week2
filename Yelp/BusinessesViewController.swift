@@ -18,7 +18,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var searchBar: UISearchBar!
     var searchBarFilterData: [Business]!
-    var settingFilters: [String: AnyObject]!
+    var settingFilters: [String: AnyObject] = [String: AnyObject]()
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,32 +33,21 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = UITableViewAutomaticDimension
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            /*if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            self.tableView.reloadData()
-            */
-            }
-        )
         
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+        
+        
+       
+        if settingFilters.count == 0 {
+            settingFilters["deal_filter"] = false as AnyObject?
+            settingFilters["distance_filter_index"] = 0 as AnyObject?
+            settingFilters["sort_filter"] = 0 as AnyObject?
+            settingFilters["sort_filter_index"] = 0 as AnyObject?
+            settingFilters["distance_filter"] = 0.0 as AnyObject?
+        }
+        updateFilter(filters: settingFilters)
         
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -90,12 +79,26 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func filterViewController(filterViewController: FilterViewController, didUpdateFilters filters: [String : AnyObject]) {
         self.settingFilters = filters
-        
-        let categories = filters["categories_filter"] as? [String]
-        Business.searchWithTerm(term: "Restaurant", sort: nil, categories: categories, deals: nil, radius: nil) { (businesses:[Business]?, error: Error?) in
-            self.businesses = businesses ?? []
-        }
+        updateFilter(filters: filters)
     }
+    
+    func updateFilter(filters: [String: AnyObject]) {
+            let deals = filters["deal_filter"]  as? Bool
+            let sort = filters["sort_filter"] as? Int
+            let categories = filters["categories_filter"] as? [String: String] ?? [String: String]()
+        
+            let selectedCategories = categories.map {$0.value}
+            let categoriesSwitches = filters ["categories_switches"] as? [Int: Bool] ?? [Int: Bool]()
+        
+            let distance = filters["distance_filter"] as? Double
+        
+            Business.searchWithTerm(term: "Restaurant", sort: YelpSortMode(rawValue: sort!) , categories: selectedCategories, deals: deals, radius: distance) { (businesses:[Business]?, error: Error?) in
+            self.businesses = businesses ?? []
+      }
+
+    }
+    
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
        filterByKeyBoardInput(searchText: searchText)

@@ -6,7 +6,13 @@
 //  Copyright © 2017 Timothy Lee. All rights reserved.
 //
 
-
+/*
+setting["deal_filter"] = false as AnyObject?
+setting["distance_filter_index"] = 0 as AnyObject?
+setting["sort_filter"] = 0 as AnyObject?
+setting["sort_filter_index"] = 0 as AnyObject?
+setting["distance_filter"] = 0.0 as AnyObject?
+*/
 import UIKit
 
 @objc protocol FilterViewControllerDelegate {
@@ -33,7 +39,7 @@ enum SectionIdentifier: String {
     }
 }
 
-enum Distance: NSNumber {
+enum Distance: Double {
     case Auto = 0
     case Distance1 = 0.3
     case Distance2 = 1
@@ -80,17 +86,16 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     
     let defaultCategories = 3
     
-    var selectDistanceIndex = 0
+    
+    var selectDistanceIndex: Int!
     var dealSwitchStatus = false
-    var selectSortIndex = 0
+    var selectSortIndex: Int!
     var settingfilters: [String: AnyObject]!
     
     var tableStruct:[String: AnyObject] = [:]
     var restaurantCategories: [[String: String]]!
-    
-    
     var categoriesSwitchState: [Int: Bool] = [:]
-    var categoriesSeatchKey: [String: String] = [:]
+    var searchCategories: [String: String] = [:]
     
     weak var delegate: FilterViewControllerDelegate?
     override func viewDidLoad() {
@@ -101,6 +106,11 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
         self.tableView.rowHeight = UITableViewAutomaticDimension
         restaurantCategories = yelpCategories()
         
+        dealSwitchStatus = settingfilters["deal_filter"] as? Bool ?? false
+        selectDistanceIndex = settingfilters["distance_filter_index"] as? Int ?? 0
+        selectSortIndex = settingfilters["sort_filter_index"] as? Int ?? 0
+        searchCategories = settingfilters["categories_filter"] as? [String: String] ?? [String: String]()
+        categoriesSwitchState = settingfilters["categories_switches"] as? [Int: Bool] ?? [Int : Bool]()
         // Do any additional setup after loading the view.
     }
 
@@ -116,26 +126,21 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     @IBAction func onTapSearch(_ sender: Any) {
         dismiss(animated: true, completion: nil)
         
-        var filter = [String: AnyObject]()
-        var selectedCategories: [String] = [String]()
-        for (row, selected) in categoriesSwitchState {
-            if selected {
-                selectedCategories.append(restaurantCategories[row]["code"]!)
-            }
-        }
+        var filters = [String: AnyObject]()
         
-        if selectedCategories.count > 0 {
-            let key = SectionIdentifier.Categories.rawValue
-            filter[key] = selectedCategories as AnyObject?
-        }
+        filters["deal_filter"] = dealSwitchStatus as AnyObject?
+        filters["distance_filter_index"] = selectDistanceIndex as AnyObject?
+        filters["sort_filter_index"] = selectSortIndex as AnyObject?
+        filters["categories_filter"] = searchCategories as AnyObject?
+        filters["categories_switches"] = categoriesSwitchState as AnyObject?
+        filters["distance_filter"] = distanceFilters[selectDistanceIndex].rawValue as AnyObject
+        filters["sort_filter"] = sortFilters[selectSortIndex].rawValue as AnyObject
         
-        delegate?.filterViewController?(filterViewController: self, didUpdateFilters: filter)
+        delegate?.filterViewController?(filterViewController: self, didUpdateFilters: filters)
     }
     
     @IBAction func onTapCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
-        let filters = [String:AnyObject]()
-        delegate?.filterViewController?(filterViewController: self, didUpdateFilters: filters)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -178,6 +183,14 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
             let indexPath = tableView.indexPath(for: switchCell)!
             if tableSection[indexPath.section] == .Categories {
                    categoriesSwitchState[indexPath.row] = value
+                
+                   let code = restaurantCategories[indexPath.row]["code"]
+                   let key = restaurantCategories[indexPath.row]["name"]
+                if(value) {
+                    searchCategories[key!] = code
+                } else {
+                    searchCategories.removeValue(forKey: key!)
+                }
             }
             else {
                    dealSwitchStatus = value

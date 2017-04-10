@@ -19,6 +19,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var searchBar: UISearchBar!
     var searchBarFilterData: [Business]!
     var settingFilters: [String: AnyObject] = [String: AnyObject]()
+    var refreshControl: UIRefreshControl = UIRefreshControl()
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,10 +34,14 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = UITableViewAutomaticDimension
+    
+        refreshControl.addTarget(self, action: #selector(pullDownToRefresh), for: .valueChanged)
+        if #available(iOS 10.0, *) {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
         
-        
-        
-       
         if settingFilters.count == 0 {
             settingFilters["deal_filter"] = false as AnyObject?
             settingFilters["distance_filter_index"] = 0 as AnyObject?
@@ -45,9 +50,11 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             settingFilters["distance_filter"] = 0.0 as AnyObject?
         }
         updateFilter(filters: settingFilters)
-        
     }
     
+    func pullDownToRefresh() {
+       self.updateFilter(filters: self.settingFilters)
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -90,8 +97,14 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             let selectedCategories = categories.map {$0.value}
             var distance = filters["distance_filter"] as? Double ?? 0
             distance = distance * 1609.344
-            Business.searchWithTerm(term: "Restaurant", sort: YelpSortMode(rawValue: sort!) , categories: selectedCategories, deals: deals, radius: distance) { (businesses:[Business]?, error: Error?) in
-            self.businesses = businesses ?? []
+            Business.searchWithTerm(term: "Restaurant", sort: YelpSortMode(rawValue: sort!) , categories: selectedCategories, deals: deals, radius: distance) {[weak self] (businesses:[Business]?, error: Error?) in
+                if #available(iOS 10.0, *) {
+                    self?.tableView.refreshControl?.endRefreshing()
+                } else {
+                    self?.refreshControl.endRefreshing()
+                }
+                
+                self?.businesses = businesses ?? []
       }
 
     }

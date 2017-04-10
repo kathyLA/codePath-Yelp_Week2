@@ -19,6 +19,7 @@ class SwitchCell: UITableViewCell {
     weak var delegate: SwitchCellDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.selectionStyle = .none
         // Initialization code
     }
 

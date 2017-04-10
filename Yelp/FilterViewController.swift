@@ -105,7 +105,9 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
         selectSortIndex = settingfilters["sort_filter_index"] as? Int ?? 0
         searchCategories = settingfilters["categories_filter"] as? [String: String] ?? [String: String]()
         categoriesSwitchState = settingfilters["categories_switches"] as? [Int: Bool] ?? [Int : Bool]()
-
+        folding[SectionIdentifier.Distance.rawValue] = true
+        folding[SectionIdentifier.Sort.rawValue] = true
+        folding[SectionIdentifier.Categories.rawValue] = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -185,8 +187,9 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
             case .Categories:
                 if sectionFold {
                     //More
-                    if indexPath.row == (defaultDispalyCategoriesNumber + 1) {
+                    if indexPath.row == (defaultDispalyCategoriesNumber) {
                       folding[key] = !sectionFold
+                      tableView.reloadSections(section , with: UITableViewRowAnimation.automatic)
                     }
                 }
             default: break
@@ -210,6 +213,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                    dealSwitchStatus = value
             }
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let key = tableSection[indexPath.section].rawValue
@@ -254,7 +258,7 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 }
             
             case .Categories:
-                if value && (indexPath.row == defaultDispalyCategoriesNumber + 1) {
+                if value && (indexPath.row == defaultDispalyCategoriesNumber) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell") as! LabelCell
                     return cell
                 }

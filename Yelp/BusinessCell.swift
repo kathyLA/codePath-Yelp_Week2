@@ -30,7 +30,7 @@ class BusinessCell: UITableViewCell {
             distanceLabel.text = business.distance
             businessTitle.text = business.name
             ratingView.setImageWith(business.ratingImageURL!)
-            reviewsCountLabel.text = String(describing: business.reviewCount?.intValue ?? 0) + "reviews"
+            reviewsCountLabel.text = String(describing: business.reviewCount?.intValue ?? 0) + " reviews"
             addressLabel.text = business.address
             categoryLabel.text = business.categories
             

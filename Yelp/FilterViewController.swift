@@ -6,13 +6,7 @@
 //  Copyright © 2017 Timothy Lee. All rights reserved.
 //
 
-/*
-setting["deal_filter"] = false as AnyObject?
-setting["distance_filter_index"] = 0 as AnyObject?
-setting["sort_filter"] = 0 as AnyObject?
-setting["sort_filter_index"] = 0 as AnyObject?
-setting["distance_filter"] = 0.0 as AnyObject?
-*/
+
 import UIKit
 
 @objc protocol FilterViewControllerDelegate {
@@ -92,10 +86,11 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     var selectSortIndex: Int!
     var settingfilters: [String: AnyObject]!
     
-    var tableStruct:[String: AnyObject] = [:]
+    //var tableStruct:[String: AnyObject] = [:]
     var restaurantCategories: [[String: String]]!
     var categoriesSwitchState: [Int: Bool] = [:]
     var searchCategories: [String: String] = [:]
+    var folding: [String: Bool] = [:]
     
     weak var delegate: FilterViewControllerDelegate?
     override func viewDidLoad() {
@@ -144,29 +139,36 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let key = tableSection[section].rawValue
         switch  tableSection[section] {
             case .OfferingDeal:
                 return 1
             case .Distance:
-                return distanceFilters.count
+                return  (folding[key] ?? false) ? 1 : distanceFilters.count
             case .Sort:
-                 return sortFilters.count
+                 return (folding[key] ?? false) ? 1 : sortFilters.count
             case .Categories:
                 return restaurantCategories.count
         }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let key = tableSection[indexPath.section].rawValue
+        let section = IndexSet.init(integer: indexPath.section)
         switch tableSection[indexPath.section] {
             case .Distance:
-                let perviousIndexPath: IndexPath = IndexPath(row: selectDistanceIndex, section: indexPath.section )
-                let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
-                preSelectedCell.isCheck = false
+                let  sectionFold = folding[key] ?? false
+                if !sectionFold {
+                    let perviousIndexPath: IndexPath = IndexPath(row: selectDistanceIndex, section: indexPath.section )
+                    let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
+                    preSelectedCell.isCheck = false
         
-                let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
-                cell.isCheck = true
-            
-                selectDistanceIndex = indexPath.row
+                    let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
+                    cell.isCheck = true
+                    selectDistanceIndex = indexPath.row
+                }
+                folding[key] = !sectionFold
+                tableView.reloadSections(section , with: UITableViewRowAnimation.automatic)
             case .Sort:
                 let perviousIndexPath: IndexPath = IndexPath(row: selectSortIndex, section: indexPath.section )
                 let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
@@ -198,6 +200,9 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let key = tableSection[indexPath.section].rawValue
+        let value = (folding[key] ?? false)
+        
         switch (tableSection[indexPath.section]) {
             case .OfferingDeal:
                 let displayString = "Offering a Deal"
@@ -209,12 +214,18 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 return cell
             
             case .Distance:
-                let displayString = distanceFilters[indexPath.row].distanceLabel()
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
-                cell.checkCircleLabel.text = displayString
-                cell.isCheck = indexPath.row == selectDistanceIndex ? true : false
-                
-                return cell
+                if !value {
+                    let displayString = distanceFilters[indexPath.row].distanceLabel()
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
+                    cell.checkCircleLabel.text = displayString
+                    cell.isCheck = indexPath.row == selectDistanceIndex ? true : false
+                    return cell
+                } else {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell") as! DropDownCell
+                    let displayString = distanceFilters[selectDistanceIndex].distanceLabel()
+                    cell.dropDownLabel.text = displayString
+                    return cell
+                }
             
             case .Sort:
                 let displayString = sortFilters[indexPath.row].sortLabel()

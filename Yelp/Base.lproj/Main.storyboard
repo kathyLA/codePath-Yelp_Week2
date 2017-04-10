@@ -161,7 +161,7 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchCell" rowHeight="83" id="U0j-Ec-9NU" customClass="SwitchCell" customModule="Yelp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="83"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="83"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="U0j-Ec-9NU" id="cgw-NQ-KXG">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="83"/>
@@ -193,7 +193,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CheckCircleCell" rowHeight="83" id="Pzd-CQ-e7j" customClass="CheckCircleCell" customModule="Yelp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="138.5" width="375" height="83"/>
+                                        <rect key="frame" x="0.0" y="139" width="375" height="83"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Pzd-CQ-e7j" id="EV6-Wi-tDX">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="83"/>
@@ -226,7 +226,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DropDownCell" rowHeight="83" id="ccT-qh-jXY" customClass="DropDownCell" customModule="Yelp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="221.5" width="375" height="83"/>
+                                        <rect key="frame" x="0.0" y="222" width="375" height="83"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ccT-qh-jXY" id="tYV-EA-pcb">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="83"/>
@@ -259,14 +259,14 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelCell" rowHeight="51" id="O7l-h7-Ab9" customClass="LabelCell" customModule="Yelp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="304.5" width="375" height="51"/>
+                                        <rect key="frame" x="0.0" y="305" width="375" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O7l-h7-Ab9" id="vux-dv-rd9">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9cz-Un-vVn">
-                                                    <rect key="frame" x="166" y="15" width="42" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9cz-Un-vVn">
+                                                    <rect key="frame" x="167.5" y="15" width="39.5" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>

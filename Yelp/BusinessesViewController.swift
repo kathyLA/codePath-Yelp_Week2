@@ -15,7 +15,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             filterByKeyBoardInput(searchText: searchBar.text ?? "")
         }
     }
-    
+    var folding: [String: Bool] = [:]
     var searchBar: UISearchBar!
     var searchBarFilterData: [Business]!
     var settingFilters: [String: AnyObject] = [String: AnyObject]()

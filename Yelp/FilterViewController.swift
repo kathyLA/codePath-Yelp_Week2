@@ -155,9 +155,9 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let key = tableSection[indexPath.section].rawValue
         let section = IndexSet.init(integer: indexPath.section)
+        let  sectionFold = folding[key] ?? false
         switch tableSection[indexPath.section] {
             case .Distance:
-                let  sectionFold = folding[key] ?? false
                 if !sectionFold {
                     let perviousIndexPath: IndexPath = IndexPath(row: selectDistanceIndex, section: indexPath.section )
                     let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
@@ -170,13 +170,17 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 folding[key] = !sectionFold
                 tableView.reloadSections(section , with: UITableViewRowAnimation.automatic)
             case .Sort:
-                let perviousIndexPath: IndexPath = IndexPath(row: selectSortIndex, section: indexPath.section )
-                let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
+                if !sectionFold {
+                    let perviousIndexPath: IndexPath = IndexPath(row: selectSortIndex, section: indexPath.section )
+                    let preSelectedCell = tableView.cellForRow(at: perviousIndexPath) as! CheckCircleCell
                 
-                preSelectedCell.isCheck = false
-                let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
-                cell.isCheck = true
-                selectSortIndex = indexPath.row
+                    preSelectedCell.isCheck = false
+                    let cell = tableView.cellForRow(at: indexPath) as! CheckCircleCell
+                    cell.isCheck = true
+                    selectSortIndex = indexPath.row
+                }
+                folding[key] = !sectionFold
+                tableView.reloadSections(section , with: UITableViewRowAnimation.automatic)
             default: break
         }
     }
@@ -228,12 +232,19 @@ class FilterViewController: UIViewController , UITableViewDelegate, UITableViewD
                 }
             
             case .Sort:
-                let displayString = sortFilters[indexPath.row].sortLabel()
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
-                cell.checkCircleLabel.text = displayString
-                cell.isCheck = indexPath.row == selectSortIndex ? true : false
-                
-                return cell
+                if !value {
+                    let displayString = sortFilters[indexPath.row].sortLabel()
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCircleCell") as! CheckCircleCell
+                    cell.checkCircleLabel.text = displayString
+                    cell.isCheck = indexPath.row == selectSortIndex ? true : false
+                    return cell
+                } else {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "DropDownCell") as! DropDownCell
+                    let displayString = sortFilters[selectSortIndex].sortLabel()
+                    cell.dropDownLabel.text = displayString
+                    return cell
+                }
+            
             case .Categories:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
                 cell.switchLabel.text = (restaurantCategories[indexPath.row])["name"]

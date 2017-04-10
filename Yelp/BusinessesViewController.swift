@@ -88,10 +88,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             let categories = filters["categories_filter"] as? [String: String] ?? [String: String]()
         
             let selectedCategories = categories.map {$0.value}
-            let categoriesSwitches = filters ["categories_switches"] as? [Int: Bool] ?? [Int: Bool]()
-        
-            let distance = filters["distance_filter"] as? Double
-        
+            var distance = filters["distance_filter"] as? Double ?? 0
+            distance = distance * 1609.344
             Business.searchWithTerm(term: "Restaurant", sort: YelpSortMode(rawValue: sort!) , categories: selectedCategories, deals: deals, radius: distance) { (businesses:[Business]?, error: Error?) in
             self.businesses = businesses ?? []
       }
